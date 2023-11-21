@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<title>Expenses Traker</title>
+	<style type="text/css">
+		body{
+			font-family: sans-serif;
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+		.head{
+			background-color: rgb(0,155,214);
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+			padding: 10px 0;
+		}
+		button{
+			background-color: rgb(0,113,156) !important;
+			color: white;
+			border: none !important;
+		}
+		#expenses-list{
+			margin: 0;
+			
+/*			background-color: lightblue;*/
+			padding: 10px 5px;
+			margin-bottom: 40px;
+		}
+		.list{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+/*			background-color: blue;*/
+			margin-top: 5px;
+			box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+			border-radius: 5px;
+		}
+		.list-text-disc{
+			float: right;
+		}
+		.main{
+			width: 50%;
+			margin: 0 auto;
+		}
+		.input-bar{
+			display: flex;
+			justify-content: space-between;
+			/* background-color: white; */
+			padding: 0px 5px;
+		}
+		.input-bar #input-text{
+			width: 30%;
+		}
+		.input-bar #input-disc,.input-bar #input-type{
+			width: 25%;
+		}
+		.input-bar button{
+			width: 12%;
+		}
+		#input-text,#input-disc,#input-type,.input-bar button,#month,#year,.search {
+			padding: 10px;
+			border: none;
+			border: 1px solid black;
+			outline: none;
+			border-radius: 5px;
+		}
+		.list-text{
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 80%;
+			margin: 0;
+			padding: 10px;
+		}
+		.list button{
+			
+			width: 15%;
+			padding: 10px;
+			border: none;
+			border: 1px solid black;
+			outline: none;
+			border-radius: 5px;
+		}
+		.placeholder{
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+		}
+		.list-placeholder{
+			text-align: center;
+		}
+		.result{
+			display: flex;
+			justify-content: space-between;
+		position: fixed;
+		bottom: 0;
+		width: 50%;
+		left: 50%;
+transform: translate(-50%);
+		}
+		.result p{ 
+			padding: 10px 0;
+			margin: 0;
+			width: 50%;
+			text-align: center;
+			font-weight: 700;
+		}
+
+		.balance p{
+			padding: 10px;
+			margin: 0;
+		font-weight: 700;
+		font-size: 20px;
+		color: white;
+		}
+		.green{
+			background-color: rgb(0,113,156);
+			color: white;
+		}
+		.red{
+			background-color: rgb(0,155,214);
+			color: white;
+		}
+		/*.yellow{
+			background-color: yellow;
+		}*/
+		.input-bar button,.list button{
+			border: none;
+			background-color: grey;
+		}
+		.list-date{
+			font-size: 10px;
+			margin-top: 15px;
+			padding: 0 5px;
+		}
+		.date{
+			display: flex;
+			justify-content: center;
+
+
+		}
+		#month,#year,.search {
+		margin: 3px;
+		padding: 5px 10px;
+		}
+		#total{
+			font-size: 30px;
+		}
+
+		.about-developer{
+			font-size: 12px;
+			color: grey;
+			margin-top: 50vh;
+		}
+		@media only screen and (max-width:992px){
+			.main{
+			width: 100%;
+			
+		}
+		.result{
+			width: 100%;
+		}
+		}
+	</style>
+</head>
+<body>
+<div class="main">
+	<div class="head">
+		<div class="date">
+		<select id="month">
+		<option>Jan</option>
+		<option>Feb</option>
+		<option>Mar</option>
+		<option>Apr</option>
+		<option>May</option>
+		<option>Jun</option>
+		<option>Jul</option>
+		<option>Aug</option>
+		<option>Sep</option>
+		<option>Oct</option>
+		<option>Nov</option>
+		<option>Dec</option>
+	</select>
+	<select id="year">
+		<option>2023</option>
+		<option>2024</option>
+		<option>2025</option>
+		<option>2026</option>
+		<option>2027</option>
+		<option>2028</option>
+		<option>2029</option>
+		<option>2030</option>
+	
+	</select>
+	<button class="search" onclick="search()"><i class="fa-solid fa-magnifying-glass"></i></button>
+		</div>
+	<div class="balance">
+		<p class="yellow">Your Balance: <span id="total">  0</span></p>
+	</div>
+	<div class="input-bar">
+	<input type="number" id="input-text" placeholder="enter amount">
+	<select id="input-disc">
+		<option>Salary</option>
+		<option>Food</option>
+		<option>Clothing</option>
+		<option>Utility Bills</option>
+		<option>Fees</option>
+		<option>House Rent</option>
+		<option>Fuel</option>
+		<option>Others</option>
+</select>
+	<select id="input-type">
+		<option>income</option>
+		<option>expense</option>
+	</select>
+	<button onclick="add()"><i class="fa-solid fa-plus"></i></button>
+</div>
+</div>
+<div>
+
+	<div>
+		<ul id="expenses-list">
+			
+		</ul>
+	</div>
+
+
+	<div class="result"> 
+		<p class="green">Income:<span id="total-income"> 0</span></p>
+		<p class="red">Expenses:<span id="total-expenses"> 0</span></p>
+		
+	</div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+
+	var inputText = document.getElementById('input-text');
+	var inputType = document.getElementById('input-type');
+	var inputDisc = document.getElementById('input-disc');
+	var expensesList = document.getElementById('expenses-list');
+	var total = document.getElementById('total');
+	var totalInc = document.getElementById('total-income');
+	var totalExp = document.getElementById('total-expenses');
+	var monthSelect = document.getElementById('month');
+	var yearSelect = document.getElementById('year');
+	var date = new Date();
+	var year = date.getFullYear();
+	var getMonth = date.getMonth();
+	var getDate = date.getDate()
+	console.log(getDate)
+	var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+	var month = months[getMonth];
+	monthSelect.value = month
+
+
+	function search(){
+		getData();
+		sum();
+		expenses();
+		income();
+	}
+
+function add(){
+	if(inputText.value){
+
+var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+
+
+		userData.push({
+			'value': (inputType.value === "income") ? `+${inputText.value}` : `-${inputText.value}`,
+			'disc': inputDisc.value,
+			'date': getDate,
+			month,
+			year
+		});
+		
+		localStorage.setItem('amount', JSON.stringify(userData))
+
+		inputText.value = ""
+		
+		getData();
+		sum();
+		expenses();
+		income()
+	}
+}
+
+function getData(){
+
+	var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+
+			var finalData = "";
+
+if(userData.length == 0){
+	finalData = `<div class="placeholder">
+	<h3 class="list-placeholder">Your list is empty!<br>Get started by adding list.<h3>
+	<p class="about-developer">Developed by A.S.WebDev.</p>
+	</div>`
+}
+else{
+
+
+	userData.forEach(function (item, index) {
+
+		if(item.month == monthSelect.value && item.year == yearSelect.value){
+			finalData += `<li class="list">
+		<p class="list-text">${item.value} <span class="list-text-disc">${item.disc}</span></p>
+		<span class="list-date">${item.date}/${item.month}/${item.year}</span>
+		<button onclick="delt(${index})" class="delBtn"><i class="fa-regular fa-trash-can"></i></button>
+		</li>`
+		}
+		
+
+		
+})
+
+}
+expensesList.innerHTML = finalData;
+	}
+
+	
+
+getData();
+
+
+function delt(i) {
+	var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+
+	userData.splice(i, 1);
+
+
+	localStorage.setItem('amount', JSON.stringify(userData))
+	getData();
+	sum();
+	expenses();
+	income()
+	location.reload()
+}
+
+
+	var listData = document.querySelectorAll('.list')
+
+function sum(){
+
+	var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+var newData = userData.filter(item => {
+	 return item.month == monthSelect.value && item.year == yearSelect.value
+})
+console.log(newData)
+
+	var totalAmount = 0
+
+	
+		for(var i = 0; i <= newData.length - 1; i++){
+
+		totalAmount += Number(newData[i].value)
+
+		total.innerText = totalAmount
+
+	
+
+	}
+	
+}
+sum()
+
+function expenses(){
+
+		// var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+	var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+var newData = userData.filter(item => {
+	 return item.month == monthSelect.value && item.year == yearSelect.value
+})
+
+	
+		var totalExpenses = 0
+	for(var i = 0; i <= newData.length - 1; i++){
+
+	
+		if(newData[i].value[0]){
+		if(newData[i].value[0] == "-"){
+			console.log(newData[i].value)
+
+
+			totalExpenses += Number(newData[i].value) 
+
+			var convToStr = totalExpenses.toString().slice(1);
+
+
+		totalExp.innerText = Number(convToStr)
+		}
+	}
+		else{
+			totalExp.innerText = 0
+			
+		}
+
+		}
+
+}
+
+expenses()
+
+function income(){
+		var userData = JSON.parse(localStorage.getItem('amount')) ?? [];
+var newData = userData.filter(item => {
+	 return item.month == monthSelect.value && item.year == yearSelect.value
+})
+
+		var totalIncome = 0
+	
+	for(var i = 0; i <= newData.length - 1; i++){
+
+		if(newData[i].value[0]){
+			if(newData[i].value[0] == "+"){
+
+			totalIncome += Number(newData[i].value)
+
+		totalInc.innerText = totalIncome
+		}
+		}
+
+		
+		else{
+			totalInc.innerText = 0
+		}
+}
+}
+
+income()
+</script>
+</body>
+</html>
